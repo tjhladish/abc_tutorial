@@ -1,0 +1,40 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[margin=1.25in]{geometry}
+\usepackage[utf8]{inputenc}
+
+%opening
+\title{Introduction to ABC-SMC}
+\author{Thomas J. Hladish}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{A game of chance}
+Consider a simple game:  I have some number of standard, six-sided dice.  I roll them, add up the values on their top faces, and get 7.  How many dice do I have?
+
+Of course, you can't know for sure; I could have two dice, and rolled a 3 and a 4, or maybe I have five and I rolled 1, 1, 1, 1, and 3.  What you can say is the most \textit{likely} number of dice I have, given assumptions about how my dice work, and you can further calculate the likelihood of the possible alternatives.
+
+Let's first define a model of the process.
+\begin{enumerate}
+ \item Write down some mathematical statements that describe the process of summing the faces of some number of rolled dice.
+ \item Write an R function that takes a number of dice as an argument, ``rolls'' that number of dice, and returns the sum.
+\end{enumerate}
+
+Note that you have likely made some assumptions.  For example, you probably made the\textemdash very reasonable\textemdash assumptions that my dice did not somehow end up stacked or balanced on edge, so that I counted either fewer or more faces than the number of dice I rolled.  While these things are in principle possible, they are unlikely and presumably improbable outcomes.  Even for a game as simple as this, the model isn't reality, and assumptions make the difference.
+
+In order to answer the question of how many dice I rolled in this instance, we need to characterize the realm of possibilities.
+
+\begin{enumerate}
+ \item What is the minimum number of dice I have?
+ \item What is the maximum number of dice I have?
+ \item Are all numbers of dice equally likely? (Without more information from me, you need to assume that they are.)
+\end{enumerate}
+
+In this model, there is only one thing to vary, only one \textit{parameter}\textemdash the number of dice. The questions above characterize the \textit{prior probability distribution}, often just \textit{prior}, for that parameter.  Sometimes choosing a prior is difficult or seems arbitary, but it is an important part of articulating the assumptions of your model.  Note in this case, the range of the prior is constrained by having observed a sum of 7, but the shape of the prior is less justified.
+
+\end{document}
