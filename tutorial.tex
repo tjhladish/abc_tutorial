@@ -1,6 +1,7 @@
 \documentclass[a4paper,10pt]{article}
 \usepackage[margin=1.25in]{geometry}
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
 
 %opening
 \title{Introduction to ABC-SMC}
@@ -35,6 +36,34 @@ In order to answer the question of how many dice I rolled in this instance, we n
  \item Are all numbers of dice equally likely? (Without more information from me, you need to assume that they are.)
 \end{enumerate}
 
-In this model, there is only one thing to vary, only one \textit{parameter}\textemdash the number of dice. The questions above characterize the \textit{prior probability distribution}, often just \textit{prior}, for that parameter.  Sometimes choosing a prior is difficult or seems arbitary, but it is an important part of articulating the assumptions of your model.  Note in this case, the range of the prior is constrained by having observed a sum of 7, but the shape of the prior is less justified.
+In this model, there is only one thing to vary, only one \textit{parameter}: the number of dice. The questions above characterize the \textit{prior probability distribution}, often just \textit{prior}, for that parameter.  Sometimes choosing a prior is difficult or seems arbitary, but it is an important part of articulating the assumptions of your model.  Note in this case, the range of the prior is constrained by having observed a sum of 7, but the shape of the prior, that all possible quantities of dice are equally likely, is less justified.
+
+For each of the possible number of dice, run the dice summing function you wrote 10,000 times.  What fraction of the 10,000 times do you get a sum of 7?
+
+% faceSum <- function(ndice){
+%   sum(sample(6,ndice,replace=T))
+% }
+% 
+% p <- sapply(2:7, function(d,nrolls=10^6,target=7){
+%   rolls <- replicate(nrolls,faceSum(d))
+%   sum(rolls==target)/nrolls
+% })
+% 
+% # p = c(0.166329, 0.069855, 0.015400, 0.001944, 0.000133, 0.000003)
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=0.80\textwidth]{./simple_roll.pdf}
+ % simple_roll.png: 1200x800 pixel, 160dpi, 19.05x12.70 cm, bb=0 0 540 360
+ \caption{The approximate likelihood of each possible number of dice, given that they must sum to 7.  In a Bayesian context this would be called the (unnormalized) posterior probability distribution.}
+ \label{fig:dice_likelihood}
+\end{figure}
+
+Plotted as a bar chart, you should get results that look similar to Figure 1.  This is the \textit{posterior probability distribution}, or \textit{posterior}.  The prior describes your expectations or knowledge about a parameter before accounting for some piece of information, in this case how many dice you expect me to have before you account for them summing to 7, and the posterior describes how many dice you think I have after taking their sum into account.  From the posterior, we can see that the most likely number of dice is 2, with a mean that is somewhat higher, around 2.4.  Note that the probabilities in Figure 1 are not normalized, meaning they do not sum to one.
+
+This dice exercise can be solved analytically, so we didn't need to use a computational approach, but there are many models where analytical solutions are difficult or impossible.  For those models, we use an approach called approximate Bayesian computation, or ABC.  The dice exercise we just did is ABC applied to a simple problem.  Let's consider a version of the problem that is more complicated.
+
+\section{An increase in complexity}
+In the last game, we assumed that the dice were standard, six-sided dice.  What if we allow the dice to have an arbitary number of sides?  This presents a problem, because a change in the sum I report to you could be due to a change in the number of dice or a change in the number of faces they have.
 
 \end{document}
