@@ -3,6 +3,27 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fancyvrb}
+
+% redefine \VerbatimInput
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}%
+{%fontsize=\footnotesize,
+ %
+ frame=lines,  % top and bottom rule only
+ framesep=2em, % separation between frame and text
+ rulecolor=\color{Gray},
+ %
+% label=\fbox{\color{Black}data.txt},
+ labelposition=topline,
+ %
+ %commandchars=\|\(\), % escape character and argument delimiters for
+                      % commands within the verbatim
+ %commentchar=*        % comment character
+}
+
+
+
 %opening
 \title{Introduction to ABC-SMC}
 \author{Thomas J. Hladish}
@@ -12,6 +33,8 @@
 \maketitle
 
 \begin{abstract}
+Mathematical models are a valuable tool in many fields for understanding system dynamics, making predictions, and evaluating potential intervention strategies.  Models need to be fit to and validated against observed data, however, in order to say whether a model is good.  Model fitting, or estimating parameter values, can be technically challenging for all but the simplest models because of the computational and statistical complexity of the procedure.  This guide introduces the concept of Bayesian parameter estimation, and provides a basic tutorial for AbcSmc, a C++ toolkit that samples parameter space, compares output from a user-provided model to observed metrics using partial least squares, and calculates convergence statistics.  Although AbcSmc can be used in a distributed computing environment, the focus here is on personal computer applications for simulations not implemented in C++.
+
 
 \end{abstract}
 
@@ -63,7 +86,71 @@ Plotted as a bar chart, you should get results that look similar to Figure 1.  T
 
 This dice exercise can be solved analytically, so we didn't need to use a computational approach, but there are many models where analytical solutions are difficult or impossible.  For those models, we use an approach called approximate Bayesian computation, or ABC.  The dice exercise we just did is ABC applied to a simple problem.  Let's consider a version of the problem that is more complicated.
 
-\section{An increase in complexity}
-In the last game, we assumed that the dice were standard, six-sided dice.  What if we allow the dice to have an arbitary number of sides?  This presents a problem, because a change in the sum I report to you could be due to a change in the number of dice or a change in the number of faces they have.
+\section{Increasing complexity}
+In the last game, we assumed that the dice were standard, six-sided dice.  What if we allow the dice to have an arbitary number of sides?  This presents an inference problem, because a change in the sum I report to you could be due to a change in the number of dice or a change in the number of faces they have.
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=0.80\textwidth]{./dice_vs_faces.pdf}
+ \caption{The 2-dimensional approximate posterior probability of each number of dice and each number of sides in the prior, given that they must sum to 7.}
+ \label{fig:dice_likelihood}
+\end{figure}
+
+
+\pagebreak
+\appendix
+\section*{Appendices}
+%\addcontentsline{toc}{section}{Appendices}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+
+\subsection{Configuration file template}
+TODO - Decide which features to describe and indicate required/optional fields
+\begin{Verbatim}[commandchars=\\\{\}]
+\{
+    "smc_iterations"            : 8,
+    "num_samples"               : 1000,
+    "predictive_prior_fraction" : 0.1,
+    "pls_training_fraction"     : 0.5,
+
+    "database_filename"         : "dice.sqlite",
+
+    "parameters" : [
+        \{"name"       : "parameter 1",
+         \textit{"short_name" : "par1",}
+         "dist_type"  : "UNIFORM",
+         "num_type"   : "INT",
+         "par1"       : 1,
+         "par2"       : 1000\},
+
+        \{"name"       : "number of sides",
+         \textit{"short_name" : "nsides",}
+         "dist_type"  : "UNIFORM",
+         "num_type"   : "INT",
+         "par1"       : 1,
+         "par2"       : 1000\}
+    ],
+
+    "metrics" : [
+        \{"name"       : "dice_sum",
+         "num_type"   : "INT",
+         "value"      : 314\},
+
+        \{"name"       : "standard deviation",
+         \textit{"short_name" : "dice_stdev",}
+         "num_type"   : "FLOAT",
+         "value"      : 3.45844\}
+    ]
+\}
+\end{Verbatim}
+
+\pagebreak
+
+\subsection{Example configuration file}
+\VerbatimInput{dice_config.json}
+\pagebreak
+
+\subsection{Example R simulation}
+\VerbatimInput{dice_abc.R}
+\pagebreak
 
 \end{document}
