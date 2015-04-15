@@ -52,4 +52,4 @@ run_simulator = function(serial, ...) {
 # the parameters your simulator takes, but here you must use the parameter
 # short_names you provided in the JSON file, or the names if short_names were
 # not used.
-apply(par_df, 1 run_simulator)
+apply(par_df, 1, run_simulator)
